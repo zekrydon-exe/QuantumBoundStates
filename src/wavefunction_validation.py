@@ -1,63 +1,53 @@
 import numpy as np
-from scipy.linalg import eigh_tridiagonal
 from scipy.integrate import trapezoid
 
-# Validation tolerances
+from quantum_well import (
+    analytical_energies,
+    numerical_solution,
+    ELECTRONVOLT,
+)
+
+
+L = 1.0e-9
+N = 200
+number_of_states = 5
+
 NORM_TOLERANCE = 1e-10
 L2_ERROR_TOLERANCE = 1e-10
 
-hbar = 1.054571817e-34
-mass = 9.1093837139e-31
-L = 1.0e-9
-eV = 1.602176634e-19
+n = np.arange(1, number_of_states + 1)
 
-#Numberical grid parameters
-
-N = 200
-h = L / N
-M = N - 1
-
-x = np.linspace(0, L, N + 1)
-
-# Interior points
-x_interior = x[1:-1]
-
-C = hbar**2 / (2 * mass * h**2)
-
-diagonal = np.full(M, 2 * C)
-off_diagonal = np.full(M - 1, -C)
-
-energy, eigenvectors = eigh_tridiagonal(
-    diagonal,
-    off_diagonal,
-    select="i",
-    select_range=(0, 4)
+x, energy, psi_num = numerical_solution(
+    L,
+    N,
+    number_of_states,
 )
 
-energy_eV = energy / eV
+E_exact = analytical_energies(L, n)
 
-psi_numerical = eigenvectors / np.sqrt(h)
+energy_eV = energy / ELECTRONVOLT
 
-# Add boundary values
-psi_full = np.zeros((N + 1, 5))
-psi_full[1:-1, :] = psi_numerical
+psi_num_full = np.zeros((N + 1, number_of_states))
+psi_num_full[1:-1, :] = psi_num
 
-#Analytical wavefunctions for comparison
+psi_exact = np.zeros((N + 1, number_of_states))
 
-psi_exact = np.zeros((N + 1, 5))
-
-validation_passed = True
-
-for i in range(5):
-
-    n = i + 1
-
-    psi_exact[:, i] = (
-        np.sqrt(2 / L)
-        * np.sin(n * np.pi * x / L)
+for j, quantum_number in enumerate(n):
+    psi_exact[:, j] = (
+        np.sqrt(2.0 / L)
+        * np.sin(quantum_number * np.pi * x / L)
     )
 
-#Normalization of analytical wavefunctions
+for j in range(number_of_states):
+    overlap = trapezoid(
+        psi_num_full[:, j] * psi_exact[:, j],
+        x,
+    )
+
+    if overlap < 0.0:
+        psi_num_full[:, j] *= -1.0
+
+validation_passed = True
 
 print("=" * 85)
 print("WAVEFUNCTION VALIDATION")
@@ -70,47 +60,23 @@ print(
     f"{'Relative L2 error':<22}"
 )
 
-for i in range(5):
+for i in range(number_of_states):
+    psi = psi_num_full[:, i]
+    psi_reference = psi_exact[:, i]
 
-    # Numerical wavefunction
-    psi_num = psi_full[:, i].copy()
+    norm = trapezoid(np.abs(psi) ** 2, x)
 
-    # Analytical wavefunction
-    psi_ref = psi_exact[:, i]
-
-    # Align arbitrary eigenvector sign
-    overlap = trapezoid(
-        psi_num * psi_ref,
-        x
-    )
-
-    if overlap < 0:
-        psi_num *= -1
-
-    # Continuous normalisation integral
-    norm = trapezoid(
-        np.abs(psi_num)**2,
-        x
-    )
-
-    # Relative L2 error
-    difference = psi_num - psi_ref
+    difference = psi - psi_reference
 
     numerator = np.sqrt(
-        trapezoid(np.abs(difference)**2, x)
+        trapezoid(np.abs(difference) ** 2, x)
     )
 
     denominator = np.sqrt(
-        trapezoid(np.abs(psi_ref)**2, x)
+        trapezoid(np.abs(psi_reference) ** 2, x)
     )
 
     relative_error = numerator / denominator
-
-    if abs(norm - 1.0) > NORM_TOLERANCE:
-        validation_passed = False
-
-    if relative_error > L2_ERROR_TOLERANCE:
-        validation_passed = False
 
     print(
         f"{i + 1:<10}"
@@ -118,6 +84,12 @@ for i in range(5):
         f"{norm:<18.10f}"
         f"{relative_error:<22.8e}"
     )
+
+    if abs(norm - 1.0) > NORM_TOLERANCE:
+        validation_passed = False
+
+    if relative_error > L2_ERROR_TOLERANCE:
+        validation_passed = False
 
 print("=" * 85)
 
