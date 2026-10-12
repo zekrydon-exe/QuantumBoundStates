@@ -217,7 +217,6 @@ Particle-in-a-Box/
 ├── src/
 │   ├── analytical_solution.py
 │   ├── numerical_solution.py
-│   ├── convergence_analysis.py
 │   ├── wavefunction_analysis.py
 │   ├── wavefunction_validation.py
 │   └── final_analysis.py
@@ -245,7 +244,6 @@ Run the commands from the project root directory:
 ```bash
 python src/analytical_solution.py
 python src/numerical_solution.py
-python src/convergence_analysis.py
 python src/wavefunction_analysis.py
 python src/wavefunction_validation.py
 python src/final_analysis.py
