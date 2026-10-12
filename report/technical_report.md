@@ -638,7 +638,6 @@ Run the scripts from the project root directory:
 ```bash
 python src/analytical_solution.py
 python src/numerical_solution.py
-python src/wavefunction_analysis.py
 python src/wavefunction_validation.py
 python src/final_analysis.py
 ```
