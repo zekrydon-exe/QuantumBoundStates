@@ -687,7 +687,18 @@ The scripts generate numerical results, plots and CSV files in the `results/` di
 
 For reproducibility, the final project should preserve the code, computational parameters, generated results and documentation together.
 
-The computational environment can be documented by recording the installed Python, NumPy, SciPy and Matplotlib versions. This helps reproduce the calculations across different environments.
+### Computational Environment
+
+The calculations were performed using the following software environment:
+
+| Component | Version |
+|---|---|
+| Python | 3.12.3 |
+| NumPy | 2.5.4 |
+| SciPy | 1.18.1 |
+| Matplotlib | 3.11.2 |
+
+These versions record the environment used for the final calculations and help with reproducibility. Minor differences may occur when running the project with different software versions or hardware.
 
 ---
 
