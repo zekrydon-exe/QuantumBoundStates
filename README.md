@@ -213,7 +213,7 @@ The numerical errors and convergence data are saved as CSV files for further ana
 ## 4. Project Structure
 
 ```text
-Particle-in-a-Box/
+QuantumBoundStates/
 ├── notebooks/
 │   └── exploration.ipynb
 ├── report/
