@@ -687,7 +687,7 @@ The scripts generate numerical results, plots and CSV files in the `results/` di
 
 For reproducibility, the final project should preserve the code, computational parameters, generated results and documentation together.
 
-The Python, NumPy, SciPy and Matplotlib versions used for the final calculations should also be recorded.
+The computational environment can be documented by recording the installed Python, NumPy, SciPy and Matplotlib versions. This helps reproduce the calculations across different environments.
 
 ---
 
