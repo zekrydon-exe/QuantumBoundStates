@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 from quantum_well import (
-    HBAR,
-    ELECTRON_MASS,
     ELECTRONVOLT,
     analytical_energies,
     numerical_solution,
@@ -156,13 +154,6 @@ convergence_energies = []
 convergence_errors = []
 
 for grid_N in grid_sizes:
-    grid_h = L / grid_N
-    grid_M = grid_N - 1
-    grid_C = HBAR**2 / (2.0 * ELECTRON_MASS * grid_h**2)
-
-    grid_diagonal = np.full(grid_M, 2.0 * grid_C)
-    grid_off_diagonal = np.full(grid_M - 1, -grid_C)
-
     ground_energy = numerical_solution(
         L, grid_N, number_of_states=1
     )[1][0]
