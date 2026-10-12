@@ -2,7 +2,6 @@ import numpy as np
 from scipy.integrate import trapezoid
 
 from quantum_well import (
-    analytical_energies,
     numerical_solution,
     ELECTRONVOLT,
 )
@@ -22,8 +21,6 @@ x, energy, psi_num = numerical_solution(
     N,
     number_of_states,
 )
-
-E_exact = analytical_energies(L, n)
 
 energy_eV = energy / ELECTRONVOLT
 
