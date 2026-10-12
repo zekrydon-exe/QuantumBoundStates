@@ -2,82 +2,218 @@
 
 ## Overview
 
-This project compares the analytical solution of the one-dimensional infinite potential well with a numerical solution obtained using a finite-difference Hamiltonian. Python, NumPy, SciPy, and Matplotlib are used to calculate energy levels, inspect wavefunctions and probability densities, and study grid convergence.
+This project investigates the one-dimensional infinite potential well using analytical quantum mechanics and numerical computation.
 
-The model is an electron confined to a box of length \(L=1.0\,\mathrm{nm}\).
+The analytical solution is compared with a numerical solution obtained by discretising the time-independent Schrödinger equation using the finite-difference method.
 
-## Theory
+**Key objectives:**
+- Calculate quantised energy levels analytically and numerically.
+- Construct and diagonalise the Hamiltonian matrix.
+- Visualise wavefunctions and probability densities.
+- Investigate the effect of grid resolution on numerical accuracy.
+- Validate numerical results against analytical solutions.
 
-The potential is
+**System:** An electron confined to a one-dimensional box of length \(L = 1.0\,\mathrm{nm}\).
 
-\[
-V(x)=
+## 1. Theoretical Background
+
+### 1.1 Infinite Potential Well
+
+The potential energy is defined as
+
+$$
+V(x) =
 \begin{cases}
-0,&0<x<L,\\
-\infty,&\text{otherwise}.
+0, & 0 < x < L,\\
+\infty, & \text{otherwise}.
 \end{cases}
-\]
+$$
 
-The boundary conditions are \(\psi(0)=\psi(L)=0\). The analytical energies and normalised wavefunctions are
+Inside the box, the time-independent Schrödinger equation becomes
 
-\[
-E_n=\frac{n^2\pi^2\hbar^2}{2mL^2},\qquad
-\psi_n(x)=\sqrt{\frac{2}{L}}\sin\left(\frac{n\pi x}{L}\right).
-\]
+$$
+-\frac{\hbar^2}{2m}\frac{d^2\psi(x)}{dx^2}
+= E\psi(x).
+$$
 
-The probability density is \(|\psi_n(x)|^2\).
+The infinite potential barriers impose the boundary conditions
 
-## Numerical method
+$$
+\psi(0) = \psi(L) = 0.
+$$
 
-For a uniform grid with spacing \(h=L/N\), the central finite-difference approximation is
+### 1.2 Analytical Energy Levels
 
-\[
-\frac{d^2\psi}{dx^2}\bigg|_{x_i}\approx
+Applying the boundary conditions gives the allowed energy eigenvalues
+
+$$
+E_n = \frac{n^2\pi^2\hbar^2}{2mL^2},
+\qquad n = 1,2,3,\ldots
+$$
+
+The ground-state energy is non-zero, and the energy levels scale as
+
+$$
+E_n \propto \frac{n^2}{L^2}.
+$$
+
+Consequently, doubling the box length reduces every energy level by a factor of four.
+
+### 1.3 Analytical Wavefunctions
+
+The normalised stationary-state wavefunctions are
+
+$$
+\psi_n(x) =
+\sqrt{\frac{2}{L}}
+\sin\left(\frac{n\pi x}{L}\right).
+$$
+
+The probability density is
+
+$$
+P_n(x) = |\psi_n(x)|^2.
+$$
+
+Normalisation requires
+
+$$
+\int_0^L |\psi_n(x)|^2\,dx = 1.
+$$
+
+The \(n\)-th state contains \(n-1\) internal nodes.
+
+## 2. Numerical Method
+
+### 2.1 Spatial Discretisation
+
+The box is divided into \(N\) equal intervals with grid spacing
+
+$$
+h = \frac{L}{N}.
+$$
+
+The grid points are
+
+$$
+x_i = ih,
+\qquad i=0,1,\ldots,N.
+$$
+
+Both boundaries are included, giving \(N+1\) grid points and \(N-1\) unknown interior wavefunction values.
+
+### 2.2 Finite-Difference Approximation
+
+The second derivative is approximated using the central finite-difference formula
+
+$$
+\frac{d^2\psi}{dx^2}\bigg|_{x_i}
+\approx
 \frac{\psi_{i+1}-2\psi_i+\psi_{i-1}}{h^2}.
-\]
+$$
 
-This produces a symmetric tridiagonal Hamiltonian. Its eigenvalues approximate the energy levels and its eigenvectors represent wavefunction values on the grid. With \(N\) intervals and both boundaries included, there are \(N+1\) grid points and \(N-1\) unknown interior values.
+Substituting this approximation into the Schrödinger equation produces a matrix eigenvalue problem
 
-For \(N=200\), the Hamiltonian is \(199\times199\).
+$$
+\mathbf{H}\boldsymbol{\psi}_n
+= E_n\boldsymbol{\psi}_n.
+$$
 
-## Requirements
+The resulting Hamiltonian is a symmetric tridiagonal matrix.
 
-- Python 3
-- NumPy
-- SciPy
-- Matplotlib
+Its diagonal elements are
 
-Activate your virtual environment and install dependencies:
+$$
+H_{ii} = \frac{\hbar^2}{mh^2},
+$$
 
-```bash
-python -m pip install -r requirements.txt
-```
+and its neighbouring off-diagonal elements are
 
-## Run the scripts
+$$
+H_{i,i+1} = H_{i+1,i}
+= -\frac{\hbar^2}{2mh^2}.
+$$
 
-Run these commands from the `01_Particle_in_a_Box` project directory:
+The eigenvalues approximate the allowed energies, while the eigenvectors represent the discretised wavefunctions.
 
-```bash
-python src/analytical_solution.py
-python src/numerical_solution.py
-python src/convergence_analysis.py
-python src/wavefunction_analysis.py
-python src/wavefunction_validation.py
-python src/final_analysis.py
-```
+### 2.3 Numerical Implementation
 
-Run from the project root so relative paths to `results/` work correctly.
+The project uses Python and the following libraries:
 
-## Main result
+- **NumPy:** Numerical arrays and mathematical operations.
+- **SciPy:** Eigenvalue calculations using a specialised tridiagonal solver.
+- **Matplotlib:** Visualisation of energies, wavefunctions, probability densities and convergence.
 
-For an electron in a \(1\,\mathrm{nm}\) box, the analytical ground-state energy is approximately \(0.376030\,\mathrm{eV}\). With 200 intervals, the numerical ground-state energy is approximately \(0.376022\,\mathrm{eV}\). Numerical energies approach the analytical values as the grid is refined.
+The numerical energies are calculated independently of the analytical energy formula. The analytical results are subsequently used to assess numerical accuracy.
 
-The \(n\)-th state has \(n-1\) internal nodes. The probability density is non-negative and integrates to one for a normalised state.
+## 3. Results and Validation
 
-## Project structure
+### 3.1 Energy Levels
+
+For an electron confined to a box of length \(1\,\mathrm{nm}\), the analytical ground-state energy is approximately
+
+$$
+E_1 \approx 0.376030\,\mathrm{eV}.
+$$
+
+With 200 grid intervals, the numerical ground-state energy is approximately
+
+$$
+E_1^{\mathrm{num}} \approx 0.376022\,\mathrm{eV}.
+$$
+
+The small difference arises from the finite-difference approximation.
+
+See `results/energy_comparison.png` for the energy-level comparison.
+
+### 3.2 Grid Convergence
+
+The numerical energy is calculated for several grid resolutions.
+
+For sufficiently fine grids, the leading finite-difference energy error scales approximately as
+
+$$
+\epsilon \propto h^2
+\propto \frac{1}{N^2}.
+$$
+
+Increasing the number of intervals generally improves the energy estimate, although it also increases computational cost.
+
+See `results/energy_convergence.png` for the convergence analysis.
+
+### 3.3 Wavefunctions and Probability Densities
+
+The numerical wavefunctions are compared with the analytical solutions.
+
+The probability density is non-negative, and the normalisation condition requires its integral over the box to equal one.
+
+The sampled numerical and analytical wavefunctions agree exceptionally closely for this particular uniform-grid infinite-well problem. This is a special mathematical property of the model and should not be generalised to arbitrary potentials.
+
+See the following figures:
+
+- `results/wavefunctions.png`
+- `results/probability_densities.png`
+
+### 3.4 Error Analysis
+
+The relative percentage error in an energy eigenvalue is calculated as
+
+$$
+\epsilon_n(\%) =
+\frac{
+|E_n^{\mathrm{num}}-E_n^{\mathrm{exact}}|
+}{
+|E_n^{\mathrm{exact}}|
+}
+\times 100.
+$$
+
+The numerical errors and convergence data are saved as CSV files for further analysis.
+
+## 4. Project Structure
 
 ```text
-01_Particle_in_a_Box/
+Particle-in-a-Box/
 ├── src/
 │   ├── analytical_solution.py
 │   ├── numerical_solution.py
@@ -92,13 +228,48 @@ The \(n\)-th state has \(n-1\) internal nodes. The probability density is non-ne
 └── README.md
 ```
 
-## Limitations
+## 5. Installation
 
-- The model assumes an ideal infinite potential well in one dimension.
-- Finite differences introduce discretisation error in the energies.
-- The agreement between numerical and analytical wavefunctions at grid points is unusually strong for this uniform-grid infinite-well problem; it should not be generalised to arbitrary potentials.
-- This is a foundational model, not a molecular electronic-structure calculation.
+Python 3 is required.
 
-## Possible extensions
+Install the dependencies in your activated virtual environment:
 
-A finite potential well, quantum harmonic oscillator, and hydrogen atom are natural extensions.
+```bash
+python -m pip install -r requirements.txt
+```
+
+## 6. Running the Project
+
+Run the commands from the project root directory:
+
+```bash
+python src/analytical_solution.py
+python src/numerical_solution.py
+python src/convergence_analysis.py
+python src/wavefunction_analysis.py
+python src/wavefunction_validation.py
+python src/final_analysis.py
+```
+
+The scripts generate numerical results, plots and CSV files in the `results/` directory.
+
+## 7. Limitations
+
+- The model assumes an ideal one-dimensional infinite potential well.
+- Finite-difference discretisation introduces numerical error.
+- The sampled wavefunction comparison is unusually favourable for this particular system.
+- The model does not represent a realistic molecular electronic structure calculation.
+
+## 8. Future Extensions
+
+Potential extensions include:
+
+- Finite potential wells.
+- The quantum harmonic oscillator.
+- The hydrogen atom and hydrogenic orbitals.
+- More general one-dimensional potentials.
+- Additional numerical methods for solving the Schrödinger equation.
+
+## Author
+
+Computational quantum mechanics project exploring the relationship between analytical quantum theory and numerical methods.
