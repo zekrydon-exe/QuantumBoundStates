@@ -384,7 +384,7 @@ E(\mathrm{eV})
 $$
 
 
-## Software Architecture and Implementation
+## 5. Software Architecture and Implementation
 
 The computational implementation is organised into a shared calculation module and several standalone analysis scripts. This structure separates the underlying numerical methods from the presentation and interpretation of their results, reducing duplicated calculations and improving maintainability.
 
@@ -426,9 +426,9 @@ This modular organisation ensures that the analytical and numerical calculations
 The current implementation is specifically designed for a particle in a one-dimensional infinite potential well with a uniform finite-difference grid. Extending the shared module to support other potential-energy functions would require additional implementation and validation.
 ---
 
-## 5. Results and Discussion
+## 6. Results and Discussion
 
-### 5.1 Energy Eigenvalues
+### 6.1 Energy Eigenvalues
 
 For an electron confined to a box of length \(1.0\,\mathrm{nm}\), the analytical ground-state energy is approximately
 
@@ -462,7 +462,7 @@ The numerical and analytical energy levels can be compared using the plot genera
 
 `results/energy_comparison.png`
 
-### 5.2 Energy Quantisation
+### 6.2 Energy Quantisation
 
 The analytical energy levels satisfy
 
@@ -476,7 +476,7 @@ The increasing separation between successive energy levels is a characteristic f
 
 The numerical calculation reproduces this general pattern.
 
-### 5.3 Wavefunctions and Nodes
+### 6.3 Wavefunctions and Nodes
 
 The analytical wavefunctions are sinusoidal functions satisfying the boundary conditions at both ends of the box.
 
@@ -498,7 +498,7 @@ After appropriate normalisation and sign alignment, the numerical and analytical
 
 This behaviour is a special mathematical property of the infinite potential well on a uniform grid. It should not be assumed for arbitrary potential-energy functions.
 
-### 5.4 Probability Densities
+### 6.4 Probability Densities
 
 The probability density is defined as
 
@@ -522,7 +522,7 @@ The calculated probability densities can be inspected using
 
 `results/probability_densities.png`
 
-### 5.5 Wavefunction Normalisation
+### 6.5 Wavefunction Normalisation
 
 For a continuous wavefunction, normalisation requires
 
@@ -548,9 +548,9 @@ The resulting integral should be close to one, with any small discrepancy depend
 
 ---
 
-## 6. Error Analysis and Convergence
+## 7. Error Analysis and Convergence
 
-### 6.1 Energy Error
+### 7.1 Energy Error
 
 The absolute energy error is defined as
 
@@ -579,7 +579,7 @@ $$
 
 This quantity provides a dimensionless measure of the difference between the numerical and analytical energy values.
 
-### 6.2 Grid Convergence
+### 7.2 Grid Convergence
 
 The finite-difference method introduces a discretisation error because derivatives are approximated using values at discrete grid points.
 
@@ -615,7 +615,7 @@ The numerical data are stored in
 
 The convergence analysis provides an important test of the numerical method because it examines how the calculated energy changes as the spatial resolution is improved.
 
-### 6.3 Energy Accuracy Versus Wavefunction Accuracy
+### 7.3 Energy Accuracy Versus Wavefunction Accuracy
 
 Energy accuracy and wavefunction accuracy are related but distinct.
 
@@ -629,7 +629,7 @@ For more complicated potentials, numerical wavefunctions generally require separ
 
 ---
 
-## 7. Limitations
+## 8. Limitations
 
 Although the infinite potential well is useful for studying computational quantum mechanics, the model has several limitations.
 
@@ -644,7 +644,7 @@ Despite these limitations, the model provides a useful introduction to numerical
 
 ---
 
-## 8. Conclusion
+## 9. Conclusion
 
 This project investigated the one-dimensional infinite potential well using analytical quantum mechanics and numerical computation.
 
@@ -662,7 +662,7 @@ These techniques provide a foundation for studying more complex quantum systems,
 
 ---
 
-## 9. Reproducibility
+## 10. Reproducibility
 
 All calculations are implemented in Python.
 
@@ -691,7 +691,7 @@ The Python, NumPy, SciPy and Matplotlib versions used for the final calculations
 
 ---
 
-## 10. Future Work
+## 11. Future Work
 
 The methods developed in this project can be extended to more complicated quantum-mechanical systems.
 
