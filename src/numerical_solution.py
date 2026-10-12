@@ -1,53 +1,46 @@
+"""Calculate and compare analytical and numerical energy levels."""
+
 import numpy as np
-from scipy.linalg import eigh_tridiagonal
 
-hbar = 1.054571817e-34       # Reduced Planck constant (J s)
-mass = 9.1093837139e-31      # Electron mass (kg)
-L = 1.0e-9                   # Box length (m)
-eV = 1.602176634e-19         # One electronvolt (J)
-
-N = 200                      # Number of intervals
-h = L / N                    # Grid spacing (m)
-M = N - 1                    # Number of interior grid points
-
-C = hbar**2 / (2 * mass * h**2)
-
-diagonal = np.full(M, 2 * C)
-off_diagonal = np.full(M - 1, -C)
-
-#Eigenvalue problem solution using the tridiagonal matrix algorithm
-
-energy, wavefunctions = eigh_tridiagonal(
-    diagonal,
-    off_diagonal
+from quantum_well import (
+    analytical_energies,
+    numerical_solution,
+    ELECTRONVOLT,
 )
 
-# Convert numerical energies from joules to electronvolts
-energy_eV = energy / eV
+L = 1.0e-9       # Box length (m)
+N = 200          # Number of grid intervals
+number_of_states = 5
 
-n = np.arange(1, 6)
+n = np.arange(1, number_of_states + 1)
 
-analytical_energy = (
-    n**2 * np.pi**2 * hbar**2
-) / (2 * mass * L**2)
+analytical_energy = analytical_energies(L, n)
+analytical_energy_eV = analytical_energy / ELECTRONVOLT
 
-analytical_energy_eV = analytical_energy / eV
+x, energy, wavefunctions = numerical_solution(
+    L,
+    N,
+    number_of_states,
+)
 
+energy_eV = energy / ELECTRONVOLT
+
+#Energy error calculations
 absolute_error = np.abs(
-    energy_eV[:5] - analytical_energy_eV
+    energy_eV - analytical_energy_eV
 )
 
 percentage_error = (
     absolute_error / analytical_energy_eV
-) * 100
+) * 100.0
 
 print("=" * 78)
 print("PARTICLE IN A BOX: NUMERICAL SOLUTION")
 print("=" * 78)
 
-print(f"Box length             : {L:.3e} m")
-print(f"Number of intervals    : {N}")
-print(f"Number of interior points: {M}")
+print(f"Box length               : {L:.3e} m")
+print(f"Number of intervals      : {N}")
+print(f"Number of interior points: {N - 1}")
 
 print("\nEnergy Comparison")
 print("-" * 78)
@@ -59,9 +52,9 @@ print(
     f"{'Error (%)':<15}"
 )
 
-for i in range(5):
+for i in range(number_of_states):
     print(
-        f"{i + 1:<5}"
+        f"{n[i]:<5}"
         f"{analytical_energy_eV[i]:<22.8f}"
         f"{energy_eV[i]:<22.8f}"
         f"{percentage_error[i]:<15.6f}"
@@ -69,8 +62,19 @@ for i in range(5):
 
 print("-" * 78)
 
-print(f"\nAnalytical ground-state energy : {analytical_energy_eV[0]:.8f} eV")
-print(f"Numerical ground-state energy  : {energy_eV[0]:.8f} eV")
-print(f"Ground-state percentage error  : {percentage_error[0]:.6f}%")
+print(
+    f"\nAnalytical ground-state energy : "
+    f"{analytical_energy_eV[0]:.8f} eV"
+)
+
+print(
+    f"Numerical ground-state energy  : "
+    f"{energy_eV[0]:.8f} eV"
+)
+
+print(
+    f"Ground-state percentage error  : "
+    f"{percentage_error[0]:.6f}%"
+)
 
 print("\nCalculation completed successfully.")
