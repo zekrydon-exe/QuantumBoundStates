@@ -3,7 +3,7 @@ import numpy as np
 # Physical constants (SI units)
 hbar = 1.054571817e-34  # Reduced Planck constant, J s
 mass = 9.1093837139e-31  # Electron mass, kg
-L = 2.0e-9  # Box length, m
+L = 1.0e-9  # Box length, m
 
 # Quantum numbers n = 1, 2, 3, 4, 5
 n = np.arange(1, 6)
