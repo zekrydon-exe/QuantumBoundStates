@@ -2,6 +2,10 @@ import numpy as np
 from scipy.linalg import eigh_tridiagonal
 from scipy.integrate import trapezoid
 
+# Validation tolerances
+NORM_TOLERANCE = 1e-10
+L2_ERROR_TOLERANCE = 1e-10
+
 hbar = 1.054571817e-34
 mass = 9.1093837139e-31
 L = 1.0e-9
@@ -41,6 +45,8 @@ psi_full[1:-1, :] = psi_numerical
 #Analytical wavefunctions for comparison
 
 psi_exact = np.zeros((N + 1, 5))
+
+validation_passed = True
 
 for i in range(5):
 
@@ -100,6 +106,12 @@ for i in range(5):
 
     relative_error = numerator / denominator
 
+    if abs(norm - 1.0) > NORM_TOLERANCE:
+        validation_passed = False
+
+    if relative_error > L2_ERROR_TOLERANCE:
+        validation_passed = False
+
     print(
         f"{i + 1:<10}"
         f"{energy_eV[i]:<18.8f}"
@@ -108,4 +120,9 @@ for i in range(5):
     )
 
 print("=" * 85)
-print("Validation completed.")
+
+if validation_passed:
+    print("VALIDATION PASSED")
+else:
+    print("VALIDATION FAILED")
+    raise SystemExit(1)
