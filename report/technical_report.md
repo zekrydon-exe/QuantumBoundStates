@@ -383,6 +383,47 @@ E(\mathrm{eV})
 {1.602176634\times10^{-19}}.
 $$
 
+
+## Software Architecture and Implementation
+
+The computational implementation is organised into a shared calculation module and several standalone analysis scripts. This structure separates the underlying numerical methods from the presentation and interpretation of their results, reducing duplicated calculations and improving maintainability.
+
+### Shared Calculation Module
+
+The module `src/quantum_well.py` defines the physical constants used in the calculations and provides reusable functions for obtaining analytical energy eigenvalues and solving the finite-difference Hamiltonian.
+
+The analytical energy eigenvalues are calculated using
+
+$$
+E_n = \frac{n^2\pi^2\hbar^2}{2mL^2},
+$$
+
+where $n$ is the positive integer quantum number, $m$ is the particle mass, $L$ is the length of the potential well, and $\hbar$ is the reduced Planck constant.
+
+The numerical solution uses the finite-difference approximation to construct a tridiagonal Hamiltonian matrix. Its eigenvalues and eigenvectors are calculated using SciPy's tridiagonal eigensolver. The shared module returns numerical energies and wavefunctions, allowing the same implementation to be reused by multiple scripts.
+
+### Analysis and Validation Scripts
+
+The remaining scripts have distinct responsibilities:
+
+- **`analytical_solution.py`:** Calculates and displays the analytical energy eigenvalues.
+- **`numerical_solution.py`:** Calculates numerical energy eigenvalues and compares them with analytical values, reporting the corresponding percentage errors.
+- **`final_analysis.py`:** Performs the principal analysis by comparing analytical and numerical energies, visualising wavefunctions and probability densities, and investigating ground-state energy convergence as the grid is refined. It saves the resulting plots and numerical data in the `results/` directory.
+- **`wavefunction_validation.py`:** Evaluates wavefunction normalisation and relative L2 errors to quantify agreement between numerical and analytical wavefunctions.
+
+### Generated Results
+
+The generated CSV files contain numerical data for the energy comparisons and convergence analysis. The plots provide visual representations of the energy spectrum, wavefunctions, probability densities, and discretisation errors.
+
+The energy comparison evaluates the accuracy of the finite-difference approximation for the first five quantum states. The convergence analysis investigates how the numerical ground-state energy approaches the analytical result as the number of grid intervals increases.
+
+The wavefunction validation procedure provides additional quantitative checks through normalisation and relative L2 errors. These checks complement the visual comparison of numerical and analytical wavefunctions.
+
+### Design Considerations
+
+This modular organisation ensures that the analytical and numerical calculations are defined in one place and reused consistently. It also separates calculation, analysis, visualisation, and validation tasks, making the implementation easier to maintain and extend.
+
+The current implementation is specifically designed for a particle in a one-dimensional infinite potential well with a uniform finite-difference grid. Extending the shared module to support other potential-energy functions would require additional implementation and validation.
 ---
 
 ## 5. Results and Discussion

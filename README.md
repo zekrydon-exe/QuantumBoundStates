@@ -214,19 +214,40 @@ The numerical errors and convergence data are saved as CSV files for further ana
 
 ```text
 Particle-in-a-Box/
+├── notebooks/
+│   └── exploration.ipynb
+├── report/
+│   └── technical_report.md
+├── results/
+│   ├── convergence_data.csv
+│   ├── energy_comparison.csv
+│   ├── energy_comparison.png
+│   ├── energy_convergence.png
+│   ├── energy_errors.png
+│   ├── error_convergence.png
+│   ├── probability_densities.png
+│   └── wavefunctions.png
 ├── src/
 │   ├── analytical_solution.py
+│   ├── final_analysis.py
 │   ├── numerical_solution.py
-│   ├── wavefunction_validation.py
-│   └── final_analysis.py
-├── notebooks/
-├── results/
-├── report/
-├── requirements.txt
-└── README.md
+│   ├── quantum_well.py
+│   └── wavefunction_validation.py
+├── .gitignore
+├── README.md
+└── requirements.txt
 ```
 
-## 5. Installation
+## 5. Code Structure
+The project is organised into reusable calculation modules, standalone scripts, and analysis tools. The shared module, quantum_well.py, contains the core analytical and numerical calculations used throughout the project.
+
+1. src/quantum_well.py - Defines physical constants and reusable functions for calculating analytical energy eigenvalues and solving the finite-difference Hamiltonian.
+2. src/analytical_solution.py - Calculates and displays the analytical energy eigenvalues for a particle in a one-dimensional infinite potential well.
+3. src/numerical_solution.py - Calculates numerical energy eigenvalues using the finite-difference method and compares them with the analytical results.
+4. src/final_analysis.py - Performs the final numerical analysis, generates energy comparisons, plots wavefunctions and probability densities, and investigates convergence with grid refinement. Saves plots and numerical data in the results/ directory.
+5. src/wavefunction_validation.py - Checks wavefunction normalisation and calculates relative L2 errors to assess agreement between numerical and analytical wavefunctions.
+
+## 6. Installation
 
 Python 3 is required.
 
@@ -236,7 +257,7 @@ Install the dependencies in your activated virtual environment:
 python -m pip install -r requirements.txt
 ```
 
-## 6. Running the Project
+## 7. Running the Project
 
 Run the commands from the project root directory:
 
@@ -249,14 +270,14 @@ python src/final_analysis.py
 
 The scripts generate numerical results, plots and CSV files in the `results/` directory.
 
-## 7. Limitations
+## 8. Limitations
 
 - The model assumes an ideal one-dimensional infinite potential well.
 - Finite-difference discretisation introduces numerical error.
 - The sampled wavefunction comparison is unusually favourable for this particular system.
 - The model does not represent a realistic molecular electronic structure calculation.
 
-## 8. Future Extensions
+## 9. Future Extensions
 
 Potential extensions include:
 
