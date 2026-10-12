@@ -7,7 +7,7 @@ HBAR = 1.054571817e-34       # Reduced Planck constant (J s)
 ELECTRON_MASS = 9.1093837139e-31  # Electron mass (kg)
 ELECTRONVOLT = 1.602176634e-19    # One electronvolt (J)
 
-#Analytical solution for a particle in a 1D infinite potential well
+# Analytical solution for a particle in a 1D infinite potential well
 def analytical_energies(L, quantum_numbers):
     """Calculate analytical energy eigenvalues in joules.
 
@@ -36,7 +36,7 @@ def analytical_energies(L, quantum_numbers):
         / (2.0 * ELECTRON_MASS * L**2)
     )
 
-#Numerical solution for a particle in a 1D infinite potential well
+# Numerical solution for a particle in a 1D infinite potential well
 def numerical_solution(L, N, number_of_states=5):
     """Solve the finite-difference Hamiltonian.
 
